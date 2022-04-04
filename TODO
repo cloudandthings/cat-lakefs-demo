@@ -1,0 +1,20 @@
+TODO before going public:
+
+Group review
+
+Cleanup readme:
+
+Cleanup readme to make it more obvious what the manual setup steps are before we can do TF apply.
+
+RDS auth?
+
+Add a note:
+It would be nice if LakeFS allowed an IAM Role to be specified when writing to S3 via the assembly JAR, instead of needing hard credentials.
+
+Log github issues for suggestions in the medium post
+
+read the other 2 links about lakefs
+
+incorporate comments on medium from lakefs people
+
+make repo pretty

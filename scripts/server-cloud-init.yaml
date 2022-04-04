@@ -1,0 +1,67 @@
+#cloud-config
+# See https://cloudinit.readthedocs.io/en/latest/
+
+users:
+  - default
+  - name: lakefs
+    sudo: False
+    ssh_authorized_keys: %{ for key in ssh_authorized_keys }
+    - ssh-rsa ${key}%{ endfor }
+  - name: ec2-user
+    ssh_authorized_keys: %{ for key in ssh_authorized_keys }
+    - ssh-rsa ${key}%{ endfor }
+write_files:
+- path: /home/lakefs/log
+- path: /home/lakefs/config.yaml
+  content: |
+    logging:
+      format: "text"
+      level: "DEBUG"
+      output: /home/lakefs/log
+    database:
+      connection_string: "${database_connection_string}"
+    auth:
+      encrypt:
+        # replace this with a randomly-generated string:
+        secret_key: "${encrypt_secret_key}"
+    blockstore:
+      type: s3
+      s3:
+        region: "${region}" # optional, fallback in case discover from bucket is not supported
+    gateways:
+      s3:
+        region: "${region}"
+# Causes lakefs to not start for some reason
+# Rather removing this for now until we figure out how Glue catalog is meant to work
+#    metastore:
+#      type: glue
+#      glue:
+#        catalog-id: ${account_id}
+#        region: "${region}"
+- path: /etc/systemd/system/lakefs.service
+  content: |
+    [Unit]
+    Description=lakefs service
+    After=network.target
+
+    [Service]
+    Type=simple
+    Restart=always
+    RestartSec=3
+    User=lakefs
+    ExecStart=/usr/local/bin/lakefs --config /home/lakefs/config.yaml run
+
+    [Install]
+    WantedBy=multi-user.target
+
+runcmd:
+# Download LakeFS Binary
+    - [ wget, "https://github.com/treeverse/lakeFS/releases/download/v0.59.0/lakeFS_0.59.0_Linux_x86_64.tar.gz", "-O", "lakeFS.tar.gz" ]
+# Untar
+    - [ tar, "-xf", "lakeFS.tar.gz"]
+    - sudo mv lakefs /usr/local/bin/lakefs
+    - sudo mv lakectl /usr/local/bin/lakectl
+    - sudo chown -R lakefs:lakefs /home/lakefs
+# Create systemd-able thing
+    - systemctl start lakefs.service
+
