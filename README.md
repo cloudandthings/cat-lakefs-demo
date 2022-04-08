@@ -8,7 +8,7 @@ It provides a test AWS environment that can be spun up or down using Terraform, 
 + Various Glue jobs for testing / demonstrating features of LakeFS
 
 See our Medium write-up here for more info:
-https://medium.com/p/1237f73d4a1c
+https://medium.com/cloudandthings/fun-with-lakefs-1237f73d4a1c
 
 
 # Usage
