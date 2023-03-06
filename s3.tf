@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "lakefs" {
-  bucket        = var.lakefs_s3_bucket
+  bucket_prefix = var.lakefs_s3_bucket_prefix
   force_destroy = true
   tags = {
     Name = "lakefs-bucket"

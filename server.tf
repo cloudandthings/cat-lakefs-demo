@@ -3,7 +3,7 @@
 ##################################
 
 resource "aws_security_group" "sg_server" {
-  name   = "Allow EC2 access"
+  name   = "Access for lakefs EC2 instance"
   vpc_id = var.vpc_id
 }
 
@@ -81,7 +81,7 @@ data "aws_db_instance" "lakefs" {
 
 resource "aws_instance" "server" {
   ami                         = data.aws_ami.amzn2.id
-  instance_type               = "t2.micro"
+  instance_type               = var.lakefs_ec2_instance_type
   subnet_id                   = var.subnet_ids[0]
   vpc_security_group_ids      = [aws_security_group.sg_server.id]
   associate_public_ip_address = true
@@ -105,7 +105,7 @@ resource "aws_instance" "server" {
       ssh_authorized_keys = var.ssh_authorized_keys
   })
   # Rather add your public SSH keys to scripts/server-cloud-init.yaml
-  # key_name = "some_ec2_ssh_key_pair_name"
+  key_name = var.ec2_key_pair_name
   tags = {
     Name = "lakefs-server"
   }

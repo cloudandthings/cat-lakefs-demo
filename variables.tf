@@ -47,19 +47,30 @@ variable "rds_snapshot_id" {
 }
 
 ## LakeFS Server EC2 configuration
+variable "lakefs_ec2_instance_type" {
+  type    = string
+  default = "t3.micro"
+}
 variable "lakefs_encrypt_secret_key" {
   description = "LakeFS encryption key. Changing this will make any existing RDS data eg snapshots, unusable."
   sensitive   = true
 }
 
 variable "ssh_authorized_keys" {
-  type = list(string)
+  type    = list(string)
+  default = []
+}
+
+variable "ec2_key_pair_name" {
+  type    = string
+  default = null
 }
 
 ## LakeFS application configuration
-variable "lakefs_s3_bucket" {
-  description = "LakeFS S3 bucket name, will be created and force-destroyed (including ALL data) by this TF environment."
+variable "lakefs_s3_bucket_prefix" {
+  description = "LakeFS S3 bucket name prefix, will be created and force-destroyed (including ALL data) by this TF environment."
   type        = string
+  default     = "lakefs-"
 }
 
 variable "lakefs_repo_name" {

@@ -58,6 +58,7 @@ resource "aws_iam_policy" "lakefs" {
 ## IAM user
 ###########################################
 
+/*
 data "aws_iam_user" "lakefs" {
   user_name = var.lakefs_iam_user
 }
@@ -65,7 +66,7 @@ data "aws_iam_user" "lakefs" {
 resource "aws_iam_user_policy_attachment" "lakefs" {
   user       = var.lakefs_iam_user
   policy_arn = aws_iam_policy.lakefs.arn
-}
+}*/
 
 ###########################################
 ## Glue role
